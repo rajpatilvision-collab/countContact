@@ -1,17 +1,22 @@
+// Zoho widget lifecycle
 ZOHO.embeddedApp.on("PageLoad", function () {
     initMap();
 });
 
+// Initialize widget
 ZOHO.embeddedApp.init();
 
 function initMap() {
 
-    // Default view (India)
     var map = L.map("map").setView([20.5937, 78.9629], 5);
 
     L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
         attribution: "© OpenStreetMap"
     }).addTo(map);
+
+    setTimeout(function () {
+        map.invalidateSize();
+    }, 500);
 
     var drawnItems = new L.FeatureGroup();
     map.addLayer(drawnItems);
@@ -19,7 +24,7 @@ function initMap() {
     var drawControl = new L.Control.Draw({
         draw: {
             rectangle: true,
-            polygon: false,
+            polygon: true,
             polyline: false,
             circle: false,
             marker: false,
@@ -48,15 +53,16 @@ function initMap() {
         };
 
         document.getElementById("count").innerText = "Calculating...";
-
         ZOHO.CRM.FUNCTIONS.execute(
             "countContacts",
             payload
         ).then(function (res) {
             document.getElementById("count").innerText =
                 res.details.output;
-        }).catch(function () {
+        }).catch(function (err) {
+            console.error(err);
             document.getElementById("count").innerText = "Error";
         });
     });
 }
+
