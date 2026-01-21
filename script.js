@@ -57,12 +57,22 @@ function initMap() {
             "countContacts",
             payload
         ).then(function (res) {
-            document.getElementById("count").innerText =
-                res.details.output;
+        
+            let countValue = 0;
+        
+            if (res.details && res.details.output !== undefined) {
+                countValue = res.details.output;
+            } else if (res.details !== undefined) {
+                countValue = res.details;
+            }
+        
+            document.getElementById("count").innerText = countValue;
         }).catch(function (err) {
             console.error(err);
             document.getElementById("count").innerText = "Error";
         });
+
     });
 }
+
 
